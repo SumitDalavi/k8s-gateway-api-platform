@@ -1,0 +1,45 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: payment-service-route
+  namespace: payment-system # Dev team namespace
+spec:
+  # Attach to the Platform Team's Gateway
+  parentRefs:
+  - name: platform-gateway
+    namespace: platform-system
+  hostnames:
+  - "payments.example.com"
+  rules:
+  # Rule 1: A/B Traffic Splitting
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /checkout
+    backendRefs:
+    - name: payment-service-v1
+      port: 8080
+      weight: 90
+    - name: payment-service-v2 # Send 10% of traffic to the new version natively
+      port: 8080
+      weight: 10
+      
+  # Rule 2: Header Manipulation and Rewrites
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /legacy-api
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          type: ReplacePrefixMatch
+          replacePrefixMatch: /api/v1 # Rewrite /legacy-api to /api/v1
+    - type: RequestHeaderModifier
+      requestHeaderModifier:
+        add:
+          - name: X-Routed-By
+            value: gateway-api
+    backendRefs:
+    - name: payment-service-v1
+      port: 8080

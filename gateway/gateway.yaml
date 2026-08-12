@@ -1,0 +1,25 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: platform-gateway
+  namespace: platform-system
+  labels:
+    managed-by: platform-team
+spec:
+  gatewayClassName: envoy # Assumes Envoy Gateway controller is installed
+  listeners:
+  - name: https
+    hostname: "*.example.com"
+    port: 443
+    protocol: HTTPS
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: example-com-tls
+    # Crucial security feature: only allow routes from specific namespaces
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            shared-gateway-access: "true"
