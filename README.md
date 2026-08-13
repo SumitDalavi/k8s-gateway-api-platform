@@ -42,6 +42,84 @@ The alternative is continuing to use NGINX Ingress and relying on hundreds of br
 └── README.md
 ```
 
+
+## ðŸ“‹ Prerequisites
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| [kubectl](https://kubernetes.io/docs/tasks/tools/) | >= 1.28 | Kubernetes CLI |
+| [kind](https://kind.sigs.k8s.io/) or [minikube](https://minikube.sigs.k8s.io/) | Latest | Local K8s cluster |
+| [Helm](https://helm.sh/) | >= 3.x | Package manager |
+
+## ðŸš€ Step-by-Step Setup
+
+### Option A: Local Cluster (kind)
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/SumitDalavi/k8s-gateway-api-platform.git
+cd k8s-gateway-api-platform
+
+# 2. Create a local cluster
+kind create cluster --name gateway-lab
+
+# 3. Install Gateway API CRDs
+kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.0.0/standard-install.yaml
+
+# 4. Install a Gateway API implementation (e.g., Envoy Gateway)
+helm install eg oci://docker.io/envoyproxy/gateway-helm --version v0.6.0 -n envoy-gateway-system --create-namespace
+
+# 5. Deploy the Gateway and HTTPRoutes
+kubectl apply -f gateway/gateway.yaml
+kubectl apply -f routes/http-route-split.yaml
+```
+
+### Option B: Existing Cloud Cluster
+
+```bash
+kubectl cluster-info
+# Follow steps 3-5 from Option A
+```
+
+## ðŸ§ª Usage & Demo
+
+### Step 1: Verify the Gateway is provisioned
+```bash
+kubectl get gateways
+kubectl describe gateway demo-gateway
+```
+
+### Step 2: Test traffic routing
+```bash
+# Port-forward the Gateway
+kubectl port-forward svc/demo-gateway 8080:80 &
+
+# Send traffic â€” observe routing based on HTTPRoute rules
+curl -H "Host: demo.example.com" http://localhost:8080/
+curl -H "Host: demo.example.com" http://localhost:8080/api/v2
+```
+
+### Step 3: Observe traffic splitting
+```bash
+# The HTTPRoute splits traffic between v1 and v2 backends
+# Send multiple requests and observe different responses
+for i in $(seq 1 10); do curl -s -H "Host: demo.example.com" http://localhost:8080/; done
+```
+
+## âœ… Verification
+
+| Check | Command | Expected |
+|-------|---------|----------|
+| CRDs installed | `kubectl get crds \| grep gateway` | Gateway CRDs present |
+| Gateway ready | `kubectl get gateways` | Programmed=True |
+| Routes active | `kubectl get httproutes` | Accepted=True |
+| Traffic flows | `curl -H "Host: demo.example.com" localhost:8080` | Response from backend |
+
+```bash
+# Cleanup
+kind delete cluster --name gateway-lab
+```
+
 ## 👨‍💻 Author
 
 *Built to demonstrate modern L7 networking, API design, and role-based cluster management.*
