@@ -2,6 +2,8 @@
 
 > Implementing the Kubernetes Gateway API to replace legacy Ingress controllers, demonstrating Role-Oriented traffic management, advanced L7 routing, and traffic splitting.
 
+> **📌 Gateway API Status:** Gateway API graduated to GA (v1.0) in October 2023 and is now the recommended successor to Ingress for new Kubernetes deployments. TLS termination is supported via Gateway listeners with cert-manager integration.
+
 ## The Problem
 
 The original Kubernetes `Ingress` API is fundamentally flawed for large organizations. It forces Platform Teams and Application Developers to fight over the same YAML file, relying on messy, non-standard annotations (like `nginx.ingress.kubernetes.io/rewrite-target`) to accomplish basic L7 routing. It provides no clear separation of duties.
@@ -43,7 +45,7 @@ The alternative is continuing to use NGINX Ingress and relying on hundreds of br
 ```
 
 
-## ðŸ“‹ Prerequisites
+## 📋 Prerequisites
 
 | Tool | Version | Purpose |
 |------|---------|---------|
@@ -51,7 +53,7 @@ The alternative is continuing to use NGINX Ingress and relying on hundreds of br
 | [kind](https://kind.sigs.k8s.io/) or [minikube](https://minikube.sigs.k8s.io/) | Latest | Local K8s cluster |
 | [Helm](https://helm.sh/) | >= 3.x | Package manager |
 
-## ðŸš€ Step-by-Step Setup
+## 🚀 Step-by-Step Setup
 
 ### Option A: Local Cluster (kind)
 
@@ -81,7 +83,7 @@ kubectl cluster-info
 # Follow steps 3-5 from Option A
 ```
 
-## ðŸ§ª Usage & Demo
+## 🧪 Usage & Demo
 
 ### Step 1: Verify the Gateway is provisioned
 ```bash
@@ -106,7 +108,7 @@ curl -H "Host: demo.example.com" http://localhost:8080/api/v2
 for i in $(seq 1 10); do curl -s -H "Host: demo.example.com" http://localhost:8080/; done
 ```
 
-## âœ… Verification
+## ✅ Verification
 
 | Check | Command | Expected |
 |-------|---------|----------|
@@ -122,4 +124,9 @@ kind delete cluster --name gateway-lab
 
 ## 👨‍💻 Author
 
-*Built to demonstrate modern L7 networking, API design, and role-based cluster management.*
+**Sumit Dalavi** — Senior DevSecOps / Platform Engineer
+[GitHub](https://github.com/SumitDalavi) | [LinkedIn](https://in.linkedin.com/in/sumit-dalavi-762838129)
+
+---
+
+*Built with a focus on production-grade patterns, not toy demos.*
