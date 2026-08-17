@@ -1,5 +1,16 @@
 # Architecture: Gateway API
 
+## System Diagram
+The following Mermaid.js sequence diagram maps the core workflow and interactions:
+
+```mermaid
+sequenceDiagram
+    Internet->>Gateway: Request
+Gateway->>HTTPRoute: Match Path
+HTTPRoute->>Service: Forward to Pods
+```
+
+
 ## Role-Oriented Model
 The standard Kubernetes Ingress is a single object. If a developer wants to add a new route, they must edit the Ingress object, which also contains the TLS certificate configuration and the Load Balancer definition. This is a massive security and stability risk.
 
