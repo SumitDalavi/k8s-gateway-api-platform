@@ -1,6 +1,7 @@
 # Gateway API / Modern Kubernetes Traffic Platform 🚦🌐
 
-> Implementing the Kubernetes Gateway API to replace legacy Ingress controllers, demonstrating Role-Oriented traffic management, advanced L7 routing, and traffic splitting.
+> **Maturity:** Lab / Reference Implementation
+> _Implementing the Kubernetes Gateway API to replace legacy Ingress controllers, demonstrating Role-Oriented traffic management, advanced L7 routing, and traffic splitting._
 
 > **📌 Gateway API Status:** Gateway API graduated to GA (v1.0) in October 2023 and is now the recommended successor to Ingress for new Kubernetes deployments. TLS termination is supported via Gateway listeners with cert-manager integration.
 
@@ -127,6 +128,21 @@ kind delete cluster --name gateway-lab
 **Sumit Dalavi** — Senior DevSecOps / Platform Engineer
 [GitHub](https://github.com/SumitDalavi) | [LinkedIn](https://in.linkedin.com/in/sumit-dalavi-762838129)
 
----
+## 📚 Documentation
 
-*Built with a focus on production-grade patterns, not toy demos.*
+- [Architecture](docs/ARCHITECTURE.md) — System diagram and component details
+- [Runbook](docs/runbook.md) — Setup, commands, and expected outputs
+- [Decisions](docs/decisions.md) — ADRs for Gateway API vs Ingress
+- [Changelog](docs/changelog.md) — Change history
+
+## Mock Boundaries (Honest Scope)
+
+| What | Status | Details |
+|---|---|---|
+| Gateway API CRDs | **Real** | Standard Gateway API CRDs installed in `kind`. |
+| Controller (Envoy) | **Real** | Helm deployment of Envoy Gateway. |
+| Cloud Load Balancer | **Simulated** | Uses local NodePort or Port-Forwarding rather than AWS ALB or Azure Application Gateway. |
+
+## 🔗 Related Projects
+
+- [`gitops-progressive-delivery`](../gitops-progressive-delivery/) — Leverages Gateway API traffic splitting for Canary deployments.
