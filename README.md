@@ -1,11 +1,12 @@
 > **NOTE:** This repository is an archival lab or partial prototype. It is not actively maintained and should not be used as a reference for production-grade deployments or performance benchmarks.
 
-
 # Gateway API / Modern Kubernetes Traffic Platform 🚦🌐
 
-[![Release](https://img.shields.io/github/v/release/SumitDalavi/k8s-gateway-api-platform)](https://github.com/SumitDalavi/k8s-gateway-api-platform/releases)
+[![CI Pipeline](https://github.com/SumitDalavi/k8s-gateway-api-platform/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/SumitDalavi/k8s-gateway-api-platform/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/SumitDalavi/k8s-gateway-api-platform?color=0969da&label=release&logo=github)](https://github.com/SumitDalavi/k8s-gateway-api-platform/releases)
 [![Release Workflow](https://github.com/SumitDalavi/k8s-gateway-api-platform/actions/workflows/release.yml/badge.svg)](https://github.com/SumitDalavi/k8s-gateway-api-platform/actions/workflows/release.yml)
-
+[![SBOM](https://img.shields.io/badge/SBOM-SPDX%202.3-blueviolet?logo=spdx)](https://github.com/SumitDalavi/k8s-gateway-api-platform/releases/tag/v0.2.0)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 > **Maturity:** Lab / Reference Implementation
 > _Implementing the Kubernetes Gateway API to replace legacy Ingress controllers, demonstrating Role-Oriented traffic management, advanced L7 routing, and traffic splitting._
@@ -51,7 +52,6 @@ The alternative is continuing to use NGINX Ingress and relying on hundreds of br
 ├── docs/ARCHITECTURE.md
 └── README.md
 ```
-
 
 ## 📋 Prerequisites
 
@@ -153,7 +153,6 @@ Deploy to a local Kind or development cluster running Envoy Gateway or Cilium.
 ### Tier 3: Production Multi-Cloud Traffic Platform
 Provision infrastructure Gateway resources across production cloud environments.
 - **Distribution:** Release manifests and verified SPDX SBOM available on [GitHub Releases](https://github.com/SumitDalavi/k8s-gateway-api-platform/releases).
-
 
 ## 📚 Documentation
 
