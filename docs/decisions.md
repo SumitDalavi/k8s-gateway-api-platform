@@ -14,3 +14,10 @@ We selected Envoy Gateway as the reference implementation for local testing.
 - ✅ Envoy Gateway natively supports Gateway API out of the box.
 - ✅ Envoy is battle-tested.
 - ⚠️ Cloud environments (AWS, Azure) will likely use their native Gateway API controllers (e.g. ALB controller) in production.
+
+## ADR-002: Multi-Tier Verification & OCI Dual Distribution
+- **Context:** Declarative infrastructure and policy catalogs required robust local simulation gates without imposing cloud provider dependencies or credentials during CI/CD.
+- **Decision:** Establish a strict 3-tier verification model (offline linting → sandbox cluster test → GitOps deployment) and distribute validated release packages with SBOMs and OCI container/chart registries.
+- **Consequences:** 
+  - *Pros:* Zero cloud credentials required for CI validation; verifiable supply-chain integrity via Syft SBOMs.
+  - *Cons:* Requires maintaining local test fixtures and mock plan inputs.
