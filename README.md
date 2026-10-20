@@ -135,29 +135,25 @@ kind delete cluster --name gateway-lab
 **Sumit Dalavi** — Senior DevSecOps / Platform Engineer
 [GitHub](https://github.com/SumitDalavi) | [LinkedIn](https://in.linkedin.com/in/sumit-dalavi-762838129)
 
-## 🚀 Progressive Credential Loading & Execution Tiers
+## 🛠️ Verification & Deployment Tiers
 
-This project implements **Progressive Credential Loading (PCL)**, allowing it to run immediately out-of-the-box without external dependencies while seamlessly upgrading as credentials are provided.
+This platform architecture supports progressive verification from local manifest rendering to production Gateway API controller routing.
 
-### Tier 1: Zero-Config Mock Mode (Default)
-Ideal for CI, testing, and rapid local evaluation.
-- **Execution:** Run with default configuration (`cp .env.example .env`). Zero API keys, databases, or cloud credentials required.
-- **Fallback Behavior:** In-memory caches, deterministic offline heuristics, mock vector embeddings, and local mock storage are automatically used.
-- **Health Verification:** Endpoints report `{"mode": "mock"}` for unconfigured dependencies.
+### Tier 1: Static Manifest Linting & Schema Validation (Default)
+Render and validate Gateway and HTTPRoute manifests locally against Gateway API CRD schemas.
+- **Execution:** `kubectl apply --dry-run=client -f gateway/` or `kustomize build`.
+- **Behavior:** Validates listener configurations, route rules, and cross-namespace ReferenceGrants offline.
+- **Zero Cluster Dependencies:** No live load balancer or cloud provider required.
 
-### Tier 2: Local Development with Live Services
-Connect specific external services while keeping others mocked.
-- **Execution:** Provide credentials in `.env` for the services you want active (e.g., `GATEWAY_CLASS, APP_VERSION`).
-- **Progressive Upgrade:** The runtime inspects environment variables on boot and dynamically promotes only configured modules to live mode.
-- **Safe Fallback:** Any missing credentials automatically remain on mock fallbacks with no crashes or missing service errors.
+### Tier 2: Sandbox Envoy / Cilium Gateway Testing
+Deploy to a local Kind or development cluster running Envoy Gateway or Cilium.
+- **Execution:** Apply gateway and route definitions to a development cluster.
+- **Behavior:** Verifies actual L7 path routing, header matching, and traffic splitting behavior.
 
-### Tier 3: Production Hardened
-Enterprise deployment with production-grade backends, security scans, and container distributions.
-- **Release Distribution:** Download standalone release bundle and verified checksums:
-  ```bash
-  gh release download v0.2.0 --repo SumitDalavi/k8s-gateway-api-platform
-  ```
-- **Integrity & Security:** Checksums and SPDX SBOM (`sbom.spdx.json`) available on [GitHub Releases](https://github.com/SumitDalavi/k8s-gateway-api-platform/releases).
+### Tier 3: Production Multi-Cloud Traffic Platform
+Provision infrastructure Gateway resources across production cloud environments.
+- **Distribution:** Release manifests and verified SPDX SBOM available on [GitHub Releases](https://github.com/SumitDalavi/k8s-gateway-api-platform/releases).
+
 
 ## 📚 Documentation
 
