@@ -42,3 +42,32 @@ graph TD
 - **Tier 1 (Offline Validation):** Syntax validation, static policy checks (`opa test`, `kyverno test`, `terraform fmt -check`), and schema verification without cloud dependencies.
 - **Tier 2 (Sandbox Emulation):** Automated testing against local Kind clusters or isolated development namespaces.
 - **Tier 3 (Production GitOps):** Automated deployment via GitOps controllers (ArgoCD / Flux) or infrastructure pipelines with cryptographically signed release manifests and SPDX SBOMs.
+
+## Declarative GitOps & Multi-Cluster Deployment Architecture (v0.2.1)
+
+This service participates in the portfolio-wide **ArgoCD Hub-and-Spoke GitOps continuous delivery catalog**:
+
+```mermaid
+graph TD
+    Hub[GitOps Hub: multi-cluster-gitops-promotion] -->|AppSet Matrix: dev| DevCluster[Dev Cluster: kubernetes.default]
+    Hub -->|AppSet Matrix: staging| StagingCluster[Staging Cluster: staging-k8s:6443]
+    Hub -->|AppSet Matrix: prod| ProdCluster[Prod Cluster: prod-k8s:6443]
+    
+    subgraph WorkloadRepo["Workload Repo: k8s-gateway-api-platform"]
+        Base[deploy/k8s/base] --> DevOverlay[deploy/k8s/overlays/dev]
+        Base --> StagingOverlay[deploy/k8s/overlays/staging]
+        Base --> ProdOverlay[deploy/k8s/overlays/prod]
+    end
+    
+    DevOverlay -.->|Continuous Reconciliation| DevCluster
+    StagingOverlay -.->|Continuous Reconciliation| StagingCluster
+    ProdOverlay -.->|Gated PR Promotion| ProdCluster
+```
+
+### GitOps Topology & Separation of Concerns
+1. **Base Manifests (`deploy/k8s/base`):** Declares non-root PodSecurity standards (`runAsUser: 10001`, `drop: [ALL]`, `readOnlyRootFilesystem: true`), readiness/liveness HTTP probes, and CPU/memory requests and limits without hardcoding namespace.
+2. **Environment Overlays (`deploy/k8s/overlays/`):**
+   - `dev/`: 1 replica, `300m/256Mi` limit, automated drift self-healing.
+   - `staging/`: 2 replicas, `500m/512Mi` limit, automated drift self-healing.
+   - `prod/`: 3 replicas, `1000m/1Gi` limit, gated pull-request review.
+3. **ArgoCD Declarations (`deploy/argocd/`):** Houses standalone `Application` CRDs (`application.yaml`, `application-dev.yaml`, `application-prod.yaml`) and values overrides for OCI Helm and Kustomize reconciliation.

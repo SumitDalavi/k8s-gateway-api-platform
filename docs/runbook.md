@@ -65,3 +65,29 @@ gh release view v0.2.0 --repo SumitDalavi/k8s-gateway-api-platform
 gh release download v0.2.0 --repo SumitDalavi/k8s-gateway-api-platform --pattern "sbom.spdx.json"
 cat sbom.spdx.json | jq .spdxVersion
 ```
+
+## GitOps Deployment & Multi-Cluster Operations (v0.2.1)
+
+### Local Overlay Validation
+Validate environment-specific manifests offline with `kubectl kustomize`:
+```bash
+# Validate Dev Overlay
+kubectl kustomize deploy/k8s/overlays/dev
+
+# Validate Staging Overlay
+kubectl kustomize deploy/k8s/overlays/staging
+
+# Validate Production Overlay
+kubectl kustomize deploy/k8s/overlays/prod
+```
+
+### ArgoCD Standalone Application Deployment
+Apply the standalone declarative ArgoCD application to your local or target cluster:
+```bash
+# Deploy default staging application
+kubectl apply -f deploy/argocd/application.yaml
+
+# Deploy environment-specific applications
+kubectl apply -f deploy/argocd/application-dev.yaml
+kubectl apply -f deploy/argocd/application-prod.yaml
+```
